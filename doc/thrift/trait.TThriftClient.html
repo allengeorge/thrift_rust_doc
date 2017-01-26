@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `TThriftClient` trait in crate `thrift`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, TThriftClient">
+
+    <title>thrift::TThriftClient - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>thrift</a></p><script>window.sidebarCurrent = {name: 'TThriftClient', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>thrift</a>::<wbr><a class='trait' href=''>TThriftClient</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1161' class='srclink' href='../src/thrift/src/autogen.rs.html#29-45' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait TThriftClient {
+    fn <a href='#tymethod.i_prot_mut' class='fnname'>i_prot_mut</a>(&amp;mut self) -&gt; &amp;mut <a class='trait' href='../thrift/protocol/trait.TInputProtocol.html' title='thrift::protocol::TInputProtocol'>TInputProtocol</a>;
+    fn <a href='#tymethod.o_prot_mut' class='fnname'>o_prot_mut</a>(&amp;mut self) -&gt; &amp;mut <a class='trait' href='../thrift/protocol/trait.TOutputProtocol.html' title='thrift::protocol::TOutputProtocol'>TOutputProtocol</a>;
+    fn <a href='#tymethod.sequence_number' class='fnname'>sequence_number</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>;
+    fn <a href='#tymethod.increment_sequence_number' class='fnname'>increment_sequence_number</a>(&amp;mut self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>;
+}</pre><div class='docblock'><p>Specifies the minimum functionality an auto-generated client should provide
+to communicate with a Thrift server.</p>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.i_prot_mut' class='method stab '><span id='i_prot_mut.v' class='invisible'><code>fn <a href='#tymethod.i_prot_mut' class='fnname'>i_prot_mut</a>(&amp;mut self) -&gt; &amp;mut <a class='trait' href='../thrift/protocol/trait.TInputProtocol.html' title='thrift::protocol::TInputProtocol'>TInputProtocol</a></code></span></h3><div class='docblock'><p>Returns the input protocol used to read serialized Thrift messages
+from the Thrift server.</p>
+</div><h3 id='tymethod.o_prot_mut' class='method stab '><span id='o_prot_mut.v' class='invisible'><code>fn <a href='#tymethod.o_prot_mut' class='fnname'>o_prot_mut</a>(&amp;mut self) -&gt; &amp;mut <a class='trait' href='../thrift/protocol/trait.TOutputProtocol.html' title='thrift::protocol::TOutputProtocol'>TOutputProtocol</a></code></span></h3><div class='docblock'><p>Returns the output protocol used to write serialized Thrift messages
+to the Thrift server.</p>
+</div><h3 id='tymethod.sequence_number' class='method stab '><span id='sequence_number.v' class='invisible'><code>fn <a href='#tymethod.sequence_number' class='fnname'>sequence_number</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></span></h3><div class='docblock'><p>Returns the sequence number of the last message written to the Thrift
+server. Returns <code>0</code> if no messages have been written. Sequence
+numbers should <em>never</em> be negative, and this method returns an <code>i32</code>
+simply because the Thrift protocol encodes sequence numbers as <code>i32</code> on
+the wire.</p>
+</div><h3 id='tymethod.increment_sequence_number' class='method stab '><span id='increment_sequence_number.v' class='invisible'><code>fn <a href='#tymethod.increment_sequence_number' class='fnname'>increment_sequence_number</a>(&amp;mut self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></span></h3><div class='docblock'><p>Increments the sequence number, indicating that a message with that
+number has been sent to the Thrift server.</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    </ul><script type="text/javascript" async
+                         src="../implementors/thrift/trait.TThriftClient.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "thrift";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Error` enum in crate `thrift`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Error">
+
+    <title>thrift::Error - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>thrift</a></p><script>window.sidebarCurrent = {name: 'Error', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='index.html'>thrift</a>::<wbr><a class='enum' href=''>Error</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1029' class='srclink' href='../src/thrift/src/errors.rs.html#175-195' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum Error {
+    Transport(<a class='struct' href='../thrift/struct.TransportError.html' title='thrift::TransportError'>TransportError</a>),
+    Protocol(<a class='struct' href='../thrift/struct.ProtocolError.html' title='thrift::ProtocolError'>ProtocolError</a>),
+    Application(<a class='struct' href='../thrift/struct.ApplicationError.html' title='thrift::ApplicationError'>ApplicationError</a>),
+    User(<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='trait' href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a>&gt;),
+}</pre><div class='docblock'><p>Error type returned by all runtime library functions.</p>
+
+<p><code>thrift::Error</code> is used throughout this crate as well as in auto-generated
+Rust code. It consists of four variants defined by convention across Thrift
+implementations:</p>
+
+<ol>
+<li><code>Transport</code>: errors encountered while operating on I/O channels</li>
+<li><code>Protocol</code>: errors encountered during runtime-library processing</li>
+<li><code>Application</code>: errors encountered within auto-generated code</li>
+<li><code>User</code>: IDL-defined exception structs</li>
+</ol>
+
+<p>The <code>Application</code> variant also functions as a catch-all: all handler errors
+are automatically turned into application errors.</p>
+
+<p>All error variants except <code>Error::User</code> take an eponymous struct with two
+required fields:</p>
+
+<ol>
+<li><code>kind</code>: variant-specific enum identifying the error sub-type</li>
+<li><code>message</code>: human-readable error info string</li>
+</ol>
+
+<p><code>kind</code> is defined by convention while <code>message</code> is freeform. If none of the
+enumerated kinds are suitable use <code>Unknown</code>.</p>
+
+<p>To simplify error creation convenience constructors are defined for all
+variants, and conversions from their structs (<code>thrift::TransportError</code>,
+<code>thrift::ProtocolError</code> and <code>thrift::ApplicationError</code> into <code>thrift::Error</code>.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<p>Create a <code>TransportError</code>.</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>thrift</span>;
+<span class='kw'>use</span> <span class='ident'>thrift</span>::{<span class='ident'>TransportError</span>, <span class='ident'>TransportErrorKind</span>};
+
+<span class='comment'>// explicit</span>
+<span class='kw'>let</span> <span class='ident'>err0</span>: <span class='ident'>thrift</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-val'>Err</span>(
+  <span class='ident'>thrift</span>::<span class='ident'>Error</span>::<span class='ident'>Transport</span>(
+    <span class='ident'>TransportError</span> {
+      <span class='ident'>kind</span>: <span class='ident'>TransportErrorKind</span>::<span class='ident'>TimedOut</span>,
+      <span class='ident'>message</span>: <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;connection to server timed out&quot;</span>)
+    }
+  )
+);
+
+<span class='comment'>// use conversion</span>
+<span class='kw'>let</span> <span class='ident'>err1</span>: <span class='ident'>thrift</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-val'>Err</span>(
+  <span class='ident'>thrift</span>::<span class='ident'>Error</span>::<span class='ident'>from</span>(
+    <span class='ident'>TransportError</span> {
+      <span class='ident'>kind</span>: <span class='ident'>TransportErrorKind</span>::<span class='ident'>TimedOut</span>,
+      <span class='ident'>message</span>: <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;connection to server timed out&quot;</span>)
+    }
+  )
+);
+
+<span class='comment'>// use struct constructor</span>
+<span class='kw'>let</span> <span class='ident'>err2</span>: <span class='ident'>thrift</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-val'>Err</span>(
+  <span class='ident'>thrift</span>::<span class='ident'>Error</span>::<span class='ident'>Transport</span>(
+    <span class='ident'>TransportError</span>::<span class='ident'>new</span>(
+      <span class='ident'>TransportErrorKind</span>::<span class='ident'>TimedOut</span>,
+      <span class='string'>&quot;connection to server timed out&quot;</span>
+    )
+  )
+);
+
+
+<span class='comment'>// use error variant constructor</span>
+<span class='kw'>let</span> <span class='ident'>err3</span>: <span class='ident'>thrift</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-val'>Err</span>(
+  <span class='ident'>thrift</span>::<span class='ident'>new_transport_error</span>(
+    <span class='ident'>TransportErrorKind</span>::<span class='ident'>TimedOut</span>,
+    <span class='string'>&quot;connection to server timed out&quot;</span>
+  )
+);</pre>
+
+<p>Create an error from a string.</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>thrift</span>;
+<span class='kw'>use</span> <span class='ident'>thrift</span>::{<span class='ident'>ApplicationError</span>, <span class='ident'>ApplicationErrorKind</span>};
+
+<span class='comment'>// we just use `From::from` to convert a `String` into a `thrift::Error`</span>
+<span class='kw'>let</span> <span class='ident'>err0</span>: <span class='ident'>thrift</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-val'>Err</span>(
+  <span class='ident'>thrift</span>::<span class='ident'>Error</span>::<span class='ident'>from</span>(<span class='string'>&quot;This is an error&quot;</span>)
+);
+
+<span class='comment'>// err0 is equivalent to...</span>
+<span class='kw'>let</span> <span class='ident'>err1</span>: <span class='ident'>thrift</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-val'>Err</span>(
+  <span class='ident'>thrift</span>::<span class='ident'>Error</span>::<span class='ident'>Application</span>(
+    <span class='ident'>ApplicationError</span> {
+      <span class='ident'>kind</span>: <span class='ident'>ApplicationErrorKind</span>::<span class='ident'>Unknown</span>,
+      <span class='ident'>message</span>: <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;This is an error&quot;</span>)
+    }
+  )
+);</pre>
+
+<p>Return an IDL-defined exception.</p>
+
+<pre><code class="language-text">// Thrift IDL exception definition.
+exception Xception {
+  1: i32 errorCode,
+  2: string message
+}
+</code></pre>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>convert</span>::<span class='ident'>From</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>error</span>::<span class='ident'>Error</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Display</span>, <span class='ident'>Formatter</span>};
+
+<span class='comment'>// auto-generated by the Thrift compiler</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>Ord</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Xception</span> {
+  <span class='kw'>pub</span> <span class='ident'>error_code</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>,
+  <span class='kw'>pub</span> <span class='ident'>message</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>,
+}
+
+<span class='comment'>// auto-generated by the Thrift compiler</span>
+<span class='kw'>impl</span> <span class='ident'>Error</span> <span class='kw'>for</span> <span class='ident'>Xception</span> {
+  <span class='kw'>fn</span> <span class='ident'>description</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>str</span> {
+    <span class='string'>&quot;remote service threw Xception&quot;</span>
+  }
+}
+
+<span class='comment'>// auto-generated by the Thrift compiler</span>
+<span class='kw'>impl</span> <span class='ident'>From</span><span class='op'>&lt;</span><span class='ident'>Xception</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>thrift</span>::<span class='ident'>Error</span> {
+  <span class='kw'>fn</span> <span class='ident'>from</span>(<span class='ident'>e</span>: <span class='ident'>Xception</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
+    <span class='ident'>thrift</span>::<span class='ident'>Error</span>::<span class='ident'>User</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>e</span>))
+  }
+}
+
+<span class='comment'>// auto-generated by the Thrift compiler</span>
+<span class='kw'>impl</span> <span class='ident'>Display</span> <span class='kw'>for</span> <span class='ident'>Xception</span> {
+  <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>f</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
+    <span class='self'>self</span>.<span class='ident'>description</span>().<span class='ident'>fmt</span>(<span class='ident'>f</span>)
+  }
+}
+
+<span class='comment'>// in user code...</span>
+<span class='kw'>let</span> <span class='ident'>err</span>: <span class='ident'>thrift</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-val'>Err</span>(
+  <span class='ident'>thrift</span>::<span class='ident'>Error</span>::<span class='ident'>from</span>(<span class='ident'>Xception</span> { <span class='ident'>error_code</span>: <span class='prelude-val'>Some</span>(<span class='number'>1</span>), <span class='ident'>message</span>: <span class='prelude-val'>None</span> })
+);</pre>
+</div><h2 class='variants'>Variants</h2>
+<span id='variant.Transport' class='variant'><span id='Transport.v' class='invisible'><code>Transport(<a class='struct' href='../thrift/struct.TransportError.html' title='thrift::TransportError'>TransportError</a>)</code></span></span><div class='docblock'><p>Errors encountered while operating on I/O channels.</p>
+
+<p>These include <em>connection closed</em> and <em>bind failure</em>.</p>
+</div><span id='variant.Protocol' class='variant'><span id='Protocol.v' class='invisible'><code>Protocol(<a class='struct' href='../thrift/struct.ProtocolError.html' title='thrift::ProtocolError'>ProtocolError</a>)</code></span></span><div class='docblock'><p>Errors encountered during runtime-library processing.</p>
+
+<p>These include <em>message too large</em> and <em>unsupported protocol version</em>.</p>
+</div><span id='variant.Application' class='variant'><span id='Application.v' class='invisible'><code>Application(<a class='struct' href='../thrift/struct.ApplicationError.html' title='thrift::ApplicationError'>ApplicationError</a>)</code></span></span><div class='docblock'><p>Errors encountered within auto-generated code, or when incoming
+or outgoing messages violate the Thrift spec.</p>
+
+<p>These include <em>out-of-order messages</em> and <em>missing required struct
+fields</em>.</p>
+
+<p>This variant also functions as a catch-all: errors from handler
+functions are automatically returned as an <code>ApplicationError</code>.</p>
+</div><span id='variant.User' class='variant'><span id='User.v' class='invisible'><code>User(<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='trait' href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a>&gt;)</code></span></span><div class='docblock'><p>IDL-defined exception structs.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1038' class='srclink' href='../src/thrift/src/errors.rs.html#197-269' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.read_application_error_from_in_protocol' class='method'><span id='read_application_error_from_in_protocol.v' class='invisible'><code>fn <a href='#method.read_application_error_from_in_protocol' class='fnname'>read_application_error_from_in_protocol</a>(i: &amp;mut <a class='trait' href='../thrift/protocol/trait.TInputProtocol.html' title='thrift::protocol::TInputProtocol'>TInputProtocol</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='type' href='../thrift/type.Result.html' title='thrift::Result'>Result</a>&lt;<a class='struct' href='../thrift/struct.ApplicationError.html' title='thrift::ApplicationError'>ApplicationError</a>&gt;</code></span></h4>
+<div class='docblock'><p>Create an <code>ApplicationError</code> from its wire representation.</p>
+
+<p>Application code <strong>should never</strong> call this method directly.</p>
+</div><h4 id='method.write_application_error_to_out_protocol' class='method'><span id='write_application_error_to_out_protocol.v' class='invisible'><code>fn <a href='#method.write_application_error_to_out_protocol' class='fnname'>write_application_error_to_out_protocol</a>(e: &amp;<a class='struct' href='../thrift/struct.ApplicationError.html' title='thrift::ApplicationError'>ApplicationError</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o: &amp;mut <a class='trait' href='../thrift/protocol/trait.TOutputProtocol.html' title='thrift::protocol::TOutputProtocol'>TOutputProtocol</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='type' href='../thrift/type.Result.html' title='thrift::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+<div class='docblock'><p>Convert an <code>ApplicationError</code> into its wire representation and write
+it to the remote.</p>
+
+<p>Application code <strong>should never</strong> call this method directly.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a> for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1053' class='srclink' href='../src/thrift/src/errors.rs.html#271-280' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.description' class='method'><span id='description.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description' class='fnname'>description</a>(&amp;self) -&gt; &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></span></h4>
+<div class='docblock'><p>A short description of the error. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description">Read more</a></p>
+</div><h4 id='method.cause' class='method'><span id='cause.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause' class='fnname'>cause</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a>&gt;</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
+<div class='docblock'><p>The lower-level cause of this error, if any. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1060' class='srclink' href='../src/thrift/src/errors.rs.html#282-291' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1068' class='srclink' href='../src/thrift/src/errors.rs.html#293-302' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt-1' class='method'><span id='fmt.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt; for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1076' class='srclink' href='../src/thrift/src/errors.rs.html#304-311' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from' class='method'><span id='from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(s: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>) -&gt; Self</code></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;&amp;'a <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt; for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1079' class='srclink' href='../src/thrift/src/errors.rs.html#313-320' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-1' class='method'><span id='from.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(s: &amp;'a <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; Self</code></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='../thrift/struct.TransportError.html' title='thrift::TransportError'>TransportError</a>&gt; for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1083' class='srclink' href='../src/thrift/src/errors.rs.html#322-326' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-2' class='method'><span id='from.v-2' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: <a class='struct' href='../thrift/struct.TransportError.html' title='thrift::TransportError'>TransportError</a>) -&gt; Self</code></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='../thrift/struct.ProtocolError.html' title='thrift::ProtocolError'>ProtocolError</a>&gt; for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1086' class='srclink' href='../src/thrift/src/errors.rs.html#328-332' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-3' class='method'><span id='from.v-3' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: <a class='struct' href='../thrift/struct.ProtocolError.html' title='thrift::ProtocolError'>ProtocolError</a>) -&gt; Self</code></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='../thrift/struct.ApplicationError.html' title='thrift::ApplicationError'>ApplicationError</a>&gt; for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1089' class='srclink' href='../src/thrift/src/errors.rs.html#334-338' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-4' class='method'><span id='from.v-4' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: <a class='struct' href='../thrift/struct.ApplicationError.html' title='thrift::ApplicationError'>ApplicationError</a>) -&gt; Self</code></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html' title='std::io::error::Error'>Error</a>&gt; for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1112' class='srclink' href='../src/thrift/src/errors.rs.html#430-467' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-5' class='method'><span id='from.v-5' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(err: <a class='struct' href='https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html' title='std::io::error::Error'>Error</a>) -&gt; Self</code></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.FromUtf8Error.html' title='collections::string::FromUtf8Error'>FromUtf8Error</a>&gt; for <a class='enum' href='../thrift/enum.Error.html' title='thrift::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1115' class='srclink' href='../src/thrift/src/errors.rs.html#469-476' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-6' class='method'><span id='from.v-6' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(err: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.FromUtf8Error.html' title='collections::string::FromUtf8Error'>FromUtf8Error</a>) -&gt; Self</code></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "thrift";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

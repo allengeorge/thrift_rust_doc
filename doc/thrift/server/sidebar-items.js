@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["TMultiplexedProcessor","A `TProcessor` that can demux service calls to multiple underlying Thrift services."],["TSimpleServer","Single-threaded blocking Thrift socket server."]],"trait":[["TProcessor","Handles incoming Thrift messages and dispatches them to the user-defined handler functions."]]});
